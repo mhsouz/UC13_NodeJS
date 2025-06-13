@@ -5,6 +5,7 @@ const { engine } = require('express-handlebars');
 const mysql = require('mysql2');
 
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
+app.use('/bootstrap-icons', express.static(__dirname + '/node_modules/bootstrap-icons/font'));
 app.use('/static', express.static(__dirname + '/static'));
 
 app.engine('handlebars', engine());
@@ -39,6 +40,20 @@ app.get('/', (req, res) => {;
   });
 }
 );
+
+app.get('/produtos/add', (req, res) => {
+  let sql = 'SELECT id, nome FROM categorias';
+  
+  conexao.query(sql, function (erro, categorias_qs) {
+    if (erro) {
+      console.error('😫 Erro ao consultar categorias:', erro);
+      res.status(500).send('Erro ao consultar categorias');
+      return;
+    }
+
+    res.render('produto_form', { categorias: categorias_qs });
+  });
+});
 
 
 app.get('/clientes', (req, res) => {;
