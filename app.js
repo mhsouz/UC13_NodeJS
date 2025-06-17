@@ -75,6 +75,35 @@ app.post('/produtos/add', (req, res) => {
   });
 });
 
+app.get('/categorias', (req, res) => {
+  let sql = 'SELECT * FROM categorias';
+  conexao.query(sql, function (erro, categorias_qs) {
+    if (erro) {
+      console.error('😫 Erro ao consultar categorias:', erro);
+      res.status(500).send('Erro ao consultar categorias');
+      return;
+    }
+    res.render('categorias', { categorias: categorias_qs });
+  });
+});
+
+app.get('/categoria/add', (req, res) => {
+  res.render('categoria_form');
+}); 
+
+app.post('/categoria/add', (req, res) => {
+  const { nome, descricao } = req.body;
+  const sql = 'INSERT INTO categorias (nome, descricao) VALUES (?, ?)';
+  conexao.query(sql, [nome, descricao], (erro, resultado) => {
+    if (erro) {
+      console.error('❌ Erro ao inserir categoria:', erro);
+      return res.status(500).send('Erro ao adicionar categoria.');
+    }
+    res.redirect('/categorias');
+  });
+});   
+
+
 app.get('/clientes', (req, res) => {;
   let sql = 'SELECT * FROM clientes';
   conexao.query(sql, function (erro, clientes_qs) {
